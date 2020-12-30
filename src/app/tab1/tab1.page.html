@@ -1,0 +1,79 @@
+<ion-content>
+  <ion-item>
+    <ion-label>{{ 'TurnOnHelper' | translate }}</ion-label>
+    <ion-toggle color="danger" [checked]="enableHelp" (ionChange)="changeHelp($event)"></ion-toggle>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>{{'Lang'|translate}}</ion-label>
+    <ion-select value="brown" okText="Okay" cancelText="Dismiss" (ionChange)="onSelectChange($event)">
+      <ion-select-option value="en">{{ 'en' | translate }}</ion-select-option>
+      <ion-select-option value="tr">{{ 'tr' | translate }}</ion-select-option>
+      <ion-select-option value="ar">{{ 'ar' | translate }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-segment (ionChange)="segmentChanged($event)" scrollable>
+    <ion-segment-button checked value="Bluetooth">
+      <ion-label>{{'Bluetooth'|translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Automatic">
+      <ion-label>{{'Automatic'|translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Manual">
+      <ion-label>{{'Manual'|translate}}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Shared">
+      <ion-label>{{'Shared'|translate}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div [ngSwitch]="segment">
+    <ion-card *ngSwitchCase="'Bluetooth'">
+      <ion-card-header> {{'configBluetoothAndConnect'|translate}} </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-radio-group [(ngModel)]="selectedDevice">
+            <ion-list-header>
+              <ion-label>{{'PairedDevices'|translate}}</ion-label>
+            </ion-list-header>
+
+            <ion-item *ngFor="let d of devices">
+              <ion-label>{{d.name}}</ion-label>
+              <ion-radio slot="start" [value]="d.address"></ion-radio>
+            </ion-item>
+
+            <ion-item>
+              <ion-button shape="round" (click)="connect()">{{'Connect'|translate}}</ion-button>
+            </ion-item>
+          </ion-radio-group>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+    <ion-card *ngSwitchCase="'Automatic'">
+      <ion-card-header> {{'AutomaticCommands'|translate}} </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="block" color="danger" (click)="send('Go TO Endway')">{{'GoTOEndway'|translate}}</ion-button>
+        <ion-button expand="block" color="danger" (click)="send('Pass Road')">{{'PassRoad'|translate}}</ion-button>
+        <ion-button expand="block" color="danger" (click)="send('Walk 10 m Then Stop')"
+          >{{'Walk10mThenStop'|translate}}</ion-button
+        >
+      </ion-card-content>
+    </ion-card>
+
+    <div [hidden]="segment != 'Manual'">
+      <app-joystick></app-joystick>
+    </div>
+
+    <ion-card [hidden]="segment != 'Shared'">
+      <ion-card-content>
+        <ion-button expand="block" color="danger" (click)="send('Go TO Endway')">{{'GoTOEndway'|translate}}</ion-button>
+        <ion-button expand="block" color="danger" (click)="send('Pass Road')">{{'PassRoad'|translate}}</ion-button>
+        <ion-button expand="block" color="danger" (click)="send('Walk 10 m Then Stop')"
+          >{{'Walk10mThenStop'|translate}}</ion-button
+        >
+      </ion-card-content>
+      <app-sharedjoystick></app-sharedjoystick>
+    </ion-card>
+  </div>
+</ion-content>
